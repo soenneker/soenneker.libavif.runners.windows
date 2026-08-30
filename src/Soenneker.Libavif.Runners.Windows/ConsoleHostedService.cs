@@ -50,7 +50,7 @@ public sealed class ConsoleHostedService : IHostedService
             {
                 _appLifetime.StopApplication();
             }
-        }, cancellationToken));
+        }));
 
         return Task.CompletedTask;
     }
