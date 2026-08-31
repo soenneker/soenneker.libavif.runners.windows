@@ -60,7 +60,7 @@ public sealed class FileOperationsUtil : IFileOperationsUtil
             throw new FileNotFoundException("Could not download the libavif license.", licensePath);
 
         await File.WriteAllTextAsync(Path.Combine(stageDirectory, "SOURCE.txt"),
-            "Official release artifacts from https://github.com/AOMediaCodec/libavif/releases/latest\n", cancellationToken);
+            $"Official release artifacts from https://github.com/AOMediaCodec/libavif/releases/latest\nAsset: {AssetName}\n", cancellationToken);
 
         _logger.LogInformation("Prepared Windows x64 libavif runtime at {StageDirectory}", stageDirectory);
         return stageDirectory;
