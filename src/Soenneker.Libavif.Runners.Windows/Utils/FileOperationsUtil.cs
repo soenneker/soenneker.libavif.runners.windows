@@ -10,7 +10,6 @@ using Soenneker.Utils.File.Download.Abstract;
 
 namespace Soenneker.Libavif.Runners.Windows.Utils;
 
-/// <inheritdoc cref="IFileOperationsUtil"/>
 public sealed class FileOperationsUtil : IFileOperationsUtil
 {
     private const string Owner = "AOMediaCodec";

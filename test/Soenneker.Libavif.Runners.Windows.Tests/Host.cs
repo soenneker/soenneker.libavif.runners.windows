@@ -4,7 +4,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Serilog;
 using Soenneker.TestHosts.Unit;
 using Soenneker.Utils.Test;
-using Soenneker.Libavif.Runners.Windows.Registrars;
 
 namespace Soenneker.Libavif.Runners.Windows.Tests;
 
@@ -26,7 +25,5 @@ public sealed class Host : UnitTestHost
 
         IConfiguration config = TestUtil.BuildConfig();
         services.AddSingleton(config);
-
-        services.AddLibavifWindowsRunnerAsScoped();
     }
 }
