@@ -7,6 +7,7 @@ using Soenneker.GitHub.Repositories.Releases.Abstract;
 using Soenneker.Libavif.Runners.Windows.Utils.Abstract;
 using Soenneker.Utils.Directory.Abstract;
 using Soenneker.Utils.File.Download.Abstract;
+using Soenneker.Utils.File.Abstract;
 
 namespace Soenneker.Libavif.Runners.Windows.Utils;
 
@@ -21,14 +22,16 @@ public sealed class FileOperationsUtil : IFileOperationsUtil
     private readonly IDirectoryUtil _directoryUtil;
     private readonly IGitHubRepositoriesReleasesUtil _releasesUtil;
     private readonly IFileDownloadUtil _fileDownloadUtil;
+    private readonly IFileUtil _fileUtil;
 
     public FileOperationsUtil(ILogger<FileOperationsUtil> logger, IDirectoryUtil directoryUtil,
-        IGitHubRepositoriesReleasesUtil releasesUtil, IFileDownloadUtil fileDownloadUtil)
+        IGitHubRepositoriesReleasesUtil releasesUtil, IFileDownloadUtil fileDownloadUtil, IFileUtil fileUtil)
     {
         _logger = logger;
         _directoryUtil = directoryUtil;
         _releasesUtil = releasesUtil;
         _fileDownloadUtil = fileDownloadUtil;
+        _fileUtil = fileUtil;
     }
 
     public async ValueTask<string> Process(CancellationToken cancellationToken = default)
@@ -46,7 +49,7 @@ public sealed class FileOperationsUtil : IFileOperationsUtil
         foreach (string requiredFile in _requiredFiles)
         {
             string path = Path.Combine(stageDirectory, requiredFile);
-            if (!File.Exists(path))
+            if (!await _fileUtil.Exists(path, cancellationToken))
                 throw new FileNotFoundException($"The libavif distribution did not contain '{requiredFile}'.", path);
         }
 
@@ -55,11 +58,11 @@ public sealed class FileOperationsUtil : IFileOperationsUtil
             "https://raw.githubusercontent.com/AOMediaCodec/libavif/main/LICENSE", filePath: licensePath,
             log: false, cancellationToken: cancellationToken);
 
-        if (license is null || !File.Exists(licensePath))
+        if (license is null || !await _fileUtil.Exists(licensePath, cancellationToken))
             throw new FileNotFoundException("Could not download the libavif license.", licensePath);
 
-        await File.WriteAllTextAsync(Path.Combine(stageDirectory, "SOURCE.txt"),
-            $"Official release artifacts from https://github.com/AOMediaCodec/libavif/releases/latest\nAsset: {AssetName}\n", cancellationToken);
+        await _fileUtil.Write(Path.Combine(stageDirectory, "SOURCE.txt"),
+            $"Official release artifacts from https://github.com/AOMediaCodec/libavif/releases/latest\nAsset: {AssetName}\n", log: false, cancellationToken);
 
         _logger.LogInformation("Prepared Windows x64 libavif runtime at {StageDirectory}", stageDirectory);
         return stageDirectory;

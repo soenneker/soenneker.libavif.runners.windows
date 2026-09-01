@@ -5,6 +5,7 @@ using Soenneker.Libavif.Runners.Windows.Utils.Abstract;
 using Soenneker.Managers.Runners.Registrars;
 using Soenneker.Utils.Directory.Registrars;
 using Soenneker.Utils.File.Download.Registrars;
+using Soenneker.Utils.File.Registrars;
 
 namespace Soenneker.Libavif.Runners.Windows;
 
@@ -16,6 +17,7 @@ public static class Startup
             .AddSingleton<IFileOperationsUtil, FileOperationsUtil>()
             .AddDirectoryUtilAsSingleton()
             .AddFileDownloadUtilAsSingleton()
+            .AddFileUtilAsSingleton()
             .AddGitHubRepositoriesReleasesUtilAsSingleton()
             .AddRunnersManagerAsSingleton();
     }
